@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jey's Photography | Category Showcase</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">Jey's Photography</div>
+      <div class="header-actions">
+        <nav class="nav-links">
+          <a id="navGallery" href="gallery.html">Full Gallery</a>
+          <a id="navContact" href="#contact">Contact</a>
+        </nav>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="it">IT</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <aside id="dotNav" class="dot-nav" aria-label="Category navigation"></aside>
+
+  <main id="snapShell" class="snap-shell" aria-label="Category slider"></main>
+
+  <section class="gallery-shell">
+    <section id="archivesSection" class="archives" aria-label="Client archives">
+      <h2 id="archivesTitle">Archives</h2>
+      <p id="archivesSubtitle">High-resolution delivery folders.</p>
+      <div id="archiveList" class="archive-list"></div>
+    </section>
+  </section>
+
+  <footer id="contact" class="footer">
+    <p id="footerIntro">Start your project whenever you are ready.</p>
+    <a id="footerContactLink" href="https://www.instagram.com/jeysjpgs" target="_blank" rel="noopener">Contact on Instagram</a>
+    <p>© 2026 Giovanni "Jey" Zanasi</p>
+  </footer>
+
+  <script src="portfolio-data.js"></script>
+  <script>
+    (function () {
+      const data = window.PORTFOLIO_DATA;
+      const shell = document.getElementById('snapShell');
+      const dotNav = document.getElementById('dotNav');
+      const archiveList = document.getElementById('archiveList');
+      const navGallery = document.getElementById('navGallery');
+      const navContact = document.getElementById('navContact');
+      const archivesTitle = document.getElementById('archivesTitle');
+      const archivesSubtitle = document.getElementById('archivesSubtitle');
+      const footerIntro = document.getElementById('footerIntro');
+      const footerContactLink = document.getElementById('footerContactLink');
+      const contactSection = document.getElementById('contact');
+      const langButtons = Array.from(document.querySelectorAll('.lang-btn'));
+      const archivesSection = document.getElementById('archivesSection');
+      const langSwitch = document.querySelector('.lang-switch');
+
+      if (!data || !shell || !dotNav || !archiveList || !navGallery || !navContact || !contactSection || !archivesSection || !langSwitch) {
+        return;
+      }
+
+      const supported = data.supportedLanguages || ['en', 'it'];
+      const defaultLang = data.defaultLanguage || 'en';
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      const savedLang = localStorage.getItem('portfolio_lang');
+      let observer = null;
+
+      function detectBrowserLang() {
+        const browserLang = (navigator.language || defaultLang).toLowerCase();
+        return browserLang.startsWith('it') ? 'it' : 'en';
+      }
+
+      function normalizeLang(lang) {
+        return supported.includes(lang) ? lang : defaultLang;
+      }
+
+      function getInitialLanguage() {
+        if (queryLang) {
+          return normalizeLang(queryLang);
+        }
+        if (savedLang) {
+          return normalizeLang(savedLang);
+        }
+        return normalizeLang(detectBrowserLang());
+      }
+
+      function localize(value, lang) {
+        if (typeof value === 'string') return value;
+        if (value && typeof value === 'object') {
+          return value[lang] || value[defaultLang] || Object.values(value)[0] || '';
+        }
+        return '';
+      }
+
+      function format(template, params) {
+        return template.replace(/\{(\w+)\}/g, function (_, key) {
+          return params[key] || '';
+        });
+      }
+
+      function updateLangParam(lang) {
+        const next = new URL(window.location.href);
+        next.searchParams.set('lang', lang);
+        window.history.replaceState({}, '', next.toString());
+      }
+
+      function updateLangButtons(lang) {
+        langButtons.forEach(function (button) {
+          const active = button.dataset.lang === lang;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+
+      function renderArchives(lang, text) {
+        archiveList.innerHTML = '';
+
+        data.archives.forEach(function (archive) {
+          const item = document.createElement('article');
+          item.className = 'archive-item';
+
+          const label = document.createElement('div');
+          const strong = document.createElement('strong');
+          strong.textContent = localize(archive.title, lang);
+          const br = document.createElement('br');
+          const small = document.createElement('small');
+          small.textContent = localize(archive.meta, lang);
+          label.appendChild(strong);
+          label.appendChild(br);
+          label.appendChild(small);
+
+          const link = document.createElement('a');
+          link.className = 'link-btn';
+          link.href = archive.link;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.textContent = text.openFolder;
+
+          item.appendChild(label);
+          item.appendChild(link);
+          archiveList.appendChild(item);
+        });
+      }
+
+      function renderSlider(lang, text) {
+        shell.innerHTML = '';
+        dotNav.innerHTML = '';
+
+        const attractor = document.createElement('section');
+        attractor.className = 'slide attractor-slide';
+        attractor.style.setProperty('--cover-url', 'url("https://nx50077.your-storageshare.de/s/EXHA5HK3FJDrLZq/preview")');
+        attractor.innerHTML =
+          '<article class="slide-card">' +
+            '<h1 class="slide-title">' + text.attractorTitle + '</h1>' +
+            '<p class="slide-copy slide-copy-subtle">' + text.attractorSubtitle + '</p>' +
+            '<div class="slide-actions">' +
+              '<button class="btn btn-primary" id="startScrollBtn" type="button">' + text.startScrolling + '</button>' +
+            '</div>' +
+          '</article>';
+        shell.appendChild(attractor);
+
+        data.categories.forEach(function (category) {
+          const categoryName = localize(category.name, lang);
+          const categoryStrapline = localize(category.strapline, lang);
+
+          const section = document.createElement('section');
+          section.className = 'slide category-slide';
+          section.id = 'slide-' + category.id;
+          section.style.setProperty('--cover-url', 'url("' + category.cover + '")');
+
+          section.innerHTML =
+            '<article class="slide-card">' +
+              '<h1 class="slide-title">' + categoryName + '</h1>' +
+              '<p class="slide-copy">' + categoryStrapline + '</p>' +
+              '<div class="slide-actions">' +
+                '<a class="btn btn-primary" href="gallery.html?lang=' + encodeURIComponent(lang) + '&category=' + encodeURIComponent(category.id) + '">' + format(text.openCollection, { category: categoryName }) + '</a>' +
+                '<a class="btn btn-secondary" href="gallery.html?lang=' + encodeURIComponent(lang) + '">' + text.seeEverything + '</a>' +
+              '</div>' +
+            '</article>';
+
+          shell.appendChild(section);
+
+          const dot = document.createElement('button');
+          dot.className = 'dot';
+          dot.type = 'button';
+          dot.setAttribute('aria-label', format(text.jumpToCategory, { category: categoryName }));
+          dot.addEventListener('click', function () {
+            section.scrollIntoView({ behavior: 'smooth' });
+          });
+          dotNav.appendChild(dot);
+        });
+
+        const startScrollBtn = document.getElementById('startScrollBtn');
+        if (startScrollBtn) {
+          startScrollBtn.addEventListener('click', function () {
+            const firstCategorySlide = shell.querySelector('.category-slide');
+            if (firstCategorySlide) {
+              firstCategorySlide.scrollIntoView({ behavior: 'smooth' });
+            }
+          });
+        }
+
+        if (observer) {
+          observer.disconnect();
+        }
+
+        const slides = Array.from(document.querySelectorAll('.category-slide'));
+        const dots = Array.from(document.querySelectorAll('.dot'));
+
+        observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              const idx = slides.indexOf(entry.target);
+              dots.forEach(function (dot, dotIdx) {
+                dot.classList.toggle('active', idx === dotIdx);
+              });
+            }
+          });
+        }, { threshold: 0.65, root: shell });
+
+        slides.forEach(function (slide) {
+          observer.observe(slide);
+        });
+
+        if (dots[0]) {
+          dots[0].classList.add('active');
+        }
+      }
+
+      function applyLanguage(lang, shouldPersist) {
+        const selectedLang = normalizeLang(lang);
+        const text = data.i18n[selectedLang].portfolio;
+        const navText = data.i18n[selectedLang].nav;
+        const globalText = data.i18n[selectedLang];
+
+        document.documentElement.lang = selectedLang;
+        document.title = globalText.title.portfolio;
+
+        navGallery.textContent = navText.fullGallery;
+        navGallery.href = 'gallery.html?lang=' + encodeURIComponent(selectedLang);
+        navContact.textContent = navText.contact;
+
+        dotNav.setAttribute('aria-label', text.categoryNavigationAria);
+        shell.setAttribute('aria-label', text.sliderAria);
+        archivesSection.setAttribute('aria-label', text.archivesTitle);
+
+        archivesTitle.textContent = text.archivesTitle;
+        archivesSubtitle.textContent = text.archivesSubtitle;
+        footerIntro.textContent = text.footerIntro;
+        footerContactLink.textContent = text.contactInstagram;
+
+        langSwitch.setAttribute('aria-label', data.i18n[selectedLang].language.label);
+
+        updateLangButtons(selectedLang);
+        renderSlider(selectedLang, text);
+        renderArchives(selectedLang, text);
+
+        if (shouldPersist) {
+          localStorage.setItem('portfolio_lang', selectedLang);
+        }
+
+        updateLangParam(selectedLang);
+      }
+
+      navContact.addEventListener('click', function (event) {
+        event.preventDefault();
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      langButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          const lang = button.dataset.lang;
+          applyLanguage(lang, true);
+        });
+      });
+
+      applyLanguage(getInitialLanguage(), true);
+    })();
+  </script>
+</body>
+</html>

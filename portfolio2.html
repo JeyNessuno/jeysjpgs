@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Photography | Nature, Events & Commercial</title>
+    <!-- Tailwind CSS for rapid, modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Smooth transitions for the gallery filtering */
+        .gallery-item {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+            opacity: 1;
+        }
+        .gallery-item.hidden-item {
+            transform: scale(0.7);
+            opacity: 0;
+            position: absolute;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        /* Image hover effects and overlays */
+        .img-wrapper {
+            overflow: hidden;
+            border-radius: 0.5rem;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            background-color: #f3f4f6; /* Light gray background for non-square ratios */
+        }
+        
+        .img-wrapper:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Hover Overlay */
+        .hover-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .img-wrapper:hover .hover-overlay {
+            opacity: 1;
+        }
+
+        /* Modal / Lightbox Styles */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background-color: rgba(0,0,0,0.95);
+            padding: 2rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+
+        /* Mobile gallery: keep original photo proportions instead of forcing squares */
+        @media (max-width: 640px) {
+            #gallery-grid .img-wrapper {
+                aspect-ratio: auto !important;
+            }
+
+            #gallery-grid .img-wrapper img {
+                display: block;
+                width: 100%;
+                height: auto;
+                max-height: none;
+                object-fit: contain;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+<!-- Navigation --><nav class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<div class="text-xl font-bold tracking-tight text-gray-900">Jey's Photography</div>
+<div class="hidden md:flex space-x-6"><a class="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium" href="#portfolio">Portfolio</a> <a class="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium" href="#archives">Archives</a> <a class="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition" href="#contact">Contact</a></div>
+</div>
+</div>
+</nav><!-- Hero Section --><header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gray-900 text-white">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+<h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Never forget a moment. Forget your phone.</h1>
+<p class="mt-4 text-xl text-gray-300 max-w-3xl mx-auto mb-10">Specialized in Events, Nature, Commercial Products, and Real Estate.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center"><a class="px-8 py-4 bg-white text-gray-900 font-medium rounded-md hover:bg-gray-100 transition shadow-lg" href="#portfolio">View Portfolio</a> <a class="px-8 py-4 border border-white text-white font-medium rounded-md hover:bg-white/10 transition" href="#contact">Book a Shoot</a></div>
+</div>
+<div class="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1493333858339-dec04c44937d?q=80&amp;w=1920&amp;auto=format&amp;fit=crop')] bg-cover bg-center">&nbsp;</div>
+</header><!-- Portfolio Section -->
+<section id="portfolio" class="py-20 bg-white">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-12">
+<h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">The Work</h2>
+<p class="mt-4 text-gray-500">Filter by category to explore my expertise.</p>
+<!-- Category Filters -->
+<div id="filter-buttons" class="mt-8 flex justify-center gap-2 flex-wrap"><button class="filter-btn px-5 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition" data-filter="all">All</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="nature">Nature</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="events">Events</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="animals">Animals</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="portrait">Portrait</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="product">Product</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="real-estate">Real Estate</button> <button class="filter-btn px-5 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium transition" data-filter="travel">Travel</button></div>
+</div>
+<!-- Gallery Grid -->
+<div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><!-- Items using object-contain to preserve aspect ratio within the square -->
+<div class="gallery-item" data-category="nature travel portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/NdQnbMcF8C5jeM6/preview" alt="Nature and Travel" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">Waterfall in Ecuador</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="animals nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/ZNW2SCGErSpeEqD/preview" alt="Animal" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">Monkey in Peru</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/o3NNQQESidi8so6/preview" alt="Product" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">First Communion</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/Ge4rBtFFJbGfjSX/preview" alt="Real Estate" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">&nbsp;</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/YQKxj4TLr7FMY6j/preview" alt="Travel" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">&nbsp;</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events product">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/rtsL8iis9KnEeRP/preview" alt="Portrait" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">&nbsp;</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/cRAn5gARd3QTmqB/preview" alt="Event" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">&nbsp;</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/XwBsbJST6E47YWx/preview" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">&nbsp;</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/aKJkRyQiFaiK27d/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/5GgNo6XJF2wRcsZ/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/fK7ZkoDY32Zmzzb/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/nWZni78esW5gZ9e/preview" alt="Event" />
+<div class="hover-overlay">
+<h4 class="text-white font-bold">&nbsp;</h4>
+<p class="text-gray-300 text-xs">&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/ZStsQ34NAT6Cm9b/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="product">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/w9Q2m2kLw8wi9jb/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="product">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/sZSedc4oaKfBRN3/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="real-estate">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/qSm48XgCzsqErgJ/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="real-estate">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/Lxj3LoeKkFbxYYq/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events animals">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/9KHF9yWmHJsRQJe/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/ZZs5LAb4dZRma6m/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events animals">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/gQxWJojmxNCGGyp/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/x66WoxsdMM8iDfH/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/oodr8HFFqT8QoBX/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/BJz2Z42XBBYRggc/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events nature">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/D7ER8b4pTPL6dY5/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait nature">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/EXHA5HK3FJDrLZq/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="events portrait product">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/bX8NywSx2WricwJ/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/rs9Ddd9nMpmxSRX/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/KX8etiQBE6rK8Pd/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/9TMrHCQf6R7fybE/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait events travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/rrLEojWxCfrwDxG/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait events travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/9Tr5Py3ex287tnL/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait events travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/STfyrSsGm8pFPy7/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/yQdt4EBM4At7DAZ/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="nature travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/LZHfkGaoFxiyy9Z/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+<div class="gallery-item" data-category="portrait travel">
+<div class="img-wrapper aspect-square flex items-center justify-center"><img class="max-w-full max-h-full object-contain" src="https://nx50077.your-storageshare.de/s/nzzX4TtFnnDD2Zg/preview" />
+<div class="hover-overlay">&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Lightbox Modal -->
+<div id="lightbox"><button class="absolute top-8 right-8 text-white text-4xl hover:text-gray-400">&times;</button> <img id="lightbox-img" class="max-w-full max-h-full shadow-2xl rounded-sm" /></div>
+<!-- Client Archives -->
+<section id="archives" class="py-20 bg-gray-50 border-y border-gray-200">
+<div class="max-w-4xl mx-auto px-4">
+<div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl">
+<h2 class="text-3xl font-bold text-gray-900 mb-4">Archives</h2>
+<p class="text-gray-600 mb-8">Access example High-Res final delivery folders directly from my Nextcloud server.</p>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+<div>
+<h4 class="font-bold">Project: Polhena Paradise - Sri Lanka</h4>
+<p class="text-xs text-gray-500 uppercase tracking-widest">Real Estate &bull; 2025</p>
+</div>
+<a class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-700 transition" href="https://nx50077.your-storageshare.de/s/re9oCC2diKkcJMa" target="_blank" rel="noopener">Access Folder ↗</a></div>
+<div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+<div>
+<h4 class="font-bold">Event: Pride dell'Unione - Italy</h4>
+<p class="text-xs text-gray-500 uppercase tracking-widest">Events &bull; 2024</p>
+</div>
+<a class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-700 transition" href="https://nx50077.your-storageshare.de/s/eG9RBmsTBtBy7AL" target="_blank" rel="noopener">Access Folder ↗</a></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-gray-900 text-white">
+<div class="max-w-3xl mx-auto px-4 text-center">
+<h2 class="text-3xl font-bold mb-6">Start Your Project</h2>
+<p class="text-gray-400 mb-10">Available for bookings wherever I am.</p>
+<p class="text-gray-400 mb-10">Contact me on</p>
+<a class="px-10 py-4 bg-white text-gray-900 font-bold rounded-md hover:bg-gray-100 transition shadow-xl" href="https://www.instagram.com/jeysjpgs">Instagram</a></div>
+</section>
+<footer class="bg-black py-8 text-center text-gray-600 text-sm">
+<p>&copy; 2026 Giovanni "Jey" Zanasi.</p>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.gallery-item');
+        const wrappers = document.querySelectorAll('.img-wrapper');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCloseBtn = lightbox ? lightbox.querySelector('button') : null;
+
+        function openLightbox(src) {
+            if (!lightbox || !lightboxImg) return;
+            lightboxImg.src = src;
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            if (!lightbox || !lightboxImg) return;
+            lightbox.style.display = 'none';
+            lightboxImg.src = '';
+            document.body.style.overflow = '';
+        }
+
+        filterButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                const selected = button.dataset.filter || 'all';
+
+                filterButtons.forEach(function (btn) {
+                    btn.classList.remove('bg-gray-900', 'text-white');
+                    btn.classList.add('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
+                });
+
+                button.classList.remove('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
+                button.classList.add('bg-gray-900', 'text-white');
+
+                items.forEach(function (item) {
+                    const categories = (item.dataset.category || '').toLowerCase().split(/\s+/);
+                    const shouldShow = selected === 'all' || categories.includes(selected);
+
+                    if (shouldShow) {
+                        item.classList.remove('hidden-item');
+                    } else {
+                        item.classList.add('hidden-item');
+                    }
+                });
+            });
+        });
+
+        wrappers.forEach(function (wrapper) {
+            wrapper.addEventListener('click', function () {
+                const img = wrapper.querySelector('img');
+                if (img && img.src) {
+                    openLightbox(img.src);
+                }
+            });
+        });
+
+        if (lightbox) {
+            lightbox.addEventListener('click', closeLightbox);
+        }
+
+        if (lightboxCloseBtn) {
+            lightboxCloseBtn.addEventListener('click', closeLightbox);
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    });
+</script>
+</body>
+</html>

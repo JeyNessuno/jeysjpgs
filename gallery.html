@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jey's Photography | Full Gallery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">Jey's Photography</div>
+      <div class="header-actions">
+        <nav class="nav-links">
+          <a id="navPortfolio" href="portfolio.html">Category Slider</a>
+          <a id="navContact" href="#contact">Contact</a>
+        </nav>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="it">IT</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="gallery-shell">
+    <section class="gallery-hero">
+      <p id="heroKicker">Curated Portfolio</p>
+      <h1 id="heroTitle">All Categories</h1>
+      <p id="heroCopy">Explore every image, then narrow down by category with one click.</p>
+    </section>
+
+    <section id="filterSection" aria-label="Category filters">
+      <div id="filters" class="filter-bar"></div>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
+
+    <section id="archivesSection" class="archives" aria-label="Client archives">
+      <h2 id="archivesTitle">Archives</h2>
+      <p id="archivesSubtitle">High-resolution delivery folders.</p>
+      <div id="archiveList" class="archive-list"></div>
+    </section>
+  </main>
+
+  <footer id="contact" class="footer">
+    <p id="footerIntro">Start your project whenever you are ready.</p>
+    <a id="footerContactLink" href="https://www.instagram.com/jeysjpgs" target="_blank" rel="noopener">Contact on Instagram</a>
+    <p>© 2026 Giovanni "Jey" Zanasi</p>
+  </footer>
+
+  <div id="lightbox" class="lightbox" role="dialog" aria-label="Photo preview" aria-modal="true">
+    <button id="closeLightbox" type="button" aria-label="Close preview">×</button>
+    <img id="lightboxImg" alt="Selected portfolio image">
+  </div>
+
+  <script src="portfolio-data.js"></script>
+  <script>
+    (function () {
+      const data = window.PORTFOLIO_DATA;
+      if (!data) return;
+
+      const filters = document.getElementById('filters');
+      const galleryGrid = document.getElementById('galleryGrid');
+      const archiveList = document.getElementById('archiveList');
+      const heroTitle = document.getElementById('heroTitle');
+      const heroKicker = document.getElementById('heroKicker');
+      const heroCopy = document.getElementById('heroCopy');
+      const archivesTitle = document.getElementById('archivesTitle');
+      const archivesSubtitle = document.getElementById('archivesSubtitle');
+      const footerIntro = document.getElementById('footerIntro');
+      const footerContactLink = document.getElementById('footerContactLink');
+      const navPortfolio = document.getElementById('navPortfolio');
+      const navContact = document.getElementById('navContact');
+      const filterSection = document.getElementById('filterSection');
+      const archivesSection = document.getElementById('archivesSection');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const closeLightbox = document.getElementById('closeLightbox');
+      const langSwitch = document.querySelector('.lang-switch');
+      const contactSection = document.getElementById('contact');
+      const langButtons = Array.from(document.querySelectorAll('.lang-btn'));
+
+      const supported = data.supportedLanguages || ['en', 'it'];
+      const defaultLang = data.defaultLanguage || 'en';
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedFromUrl = urlParams.get('category');
+      const queryLang = urlParams.get('lang');
+      const savedLang = localStorage.getItem('portfolio_lang');
+
+      let activeCategory = 'all';
+      let activeLang = defaultLang;
+
+      function detectBrowserLang() {
+        const browserLang = (navigator.language || defaultLang).toLowerCase();
+        return browserLang.startsWith('it') ? 'it' : 'en';
+      }
+
+      function normalizeLang(lang) {
+        return supported.includes(lang) ? lang : defaultLang;
+      }
+
+      function getInitialLanguage() {
+        if (queryLang) {
+          return normalizeLang(queryLang);
+        }
+        if (savedLang) {
+          return normalizeLang(savedLang);
+        }
+        return normalizeLang(detectBrowserLang());
+      }
+
+      function localize(value, lang) {
+        if (typeof value === 'string') return value;
+        if (value && typeof value === 'object') {
+          return value[lang] || value[defaultLang] || Object.values(value)[0] || '';
+        }
+        return '';
+      }
+
+      function updateUrl(lang, categoryId) {
+        const next = new URL(window.location.href);
+        next.searchParams.set('lang', lang);
+        if (categoryId && categoryId !== 'all') {
+          next.searchParams.set('category', categoryId);
+        } else {
+          next.searchParams.delete('category');
+        }
+        window.history.replaceState({}, '', next.toString());
+      }
+
+      function updateLangButtons(lang) {
+        langButtons.forEach(function (button) {
+          const active = button.dataset.lang === lang;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+
+      function getCategoryMeta(categoryId, lang, text) {
+        if (categoryId === 'all') {
+          return {
+            name: text.heroTitleAll,
+            strapline: text.heroCopyAll
+          };
+        }
+
+        const found = data.categories.find(function (c) {
+          return c.id === categoryId;
+        });
+
+        if (!found) {
+          return {
+            name: text.heroTitleAll,
+            strapline: text.heroCopyAll
+          };
+        }
+
+        return {
+          name: localize(found.name, lang),
+          strapline: localize(found.strapline, lang)
+        };
+      }
+
+      function updateHero(lang, text) {
+        const meta = getCategoryMeta(activeCategory, lang, text);
+        heroKicker.textContent = activeCategory === 'all' ? text.heroKicker : text.heroKickerCategory;
+        heroTitle.textContent = meta.name;
+        heroCopy.textContent = meta.strapline || text.heroCopyCategoryFallback;
+      }
+
+      function renderFilters(lang, text) {
+        filters.innerHTML = '';
+
+        const filterList = [{ id: 'all', name: text.allFilter }].concat(
+          data.categories.map(function (category) {
+            return {
+              id: category.id,
+              name: localize(category.name, lang)
+            };
+          })
+        );
+
+        filterList.forEach(function (category) {
+          const button = document.createElement('button');
+          button.className = 'filter-btn';
+          button.type = 'button';
+          button.textContent = category.name;
+
+          if (category.id === activeCategory) {
+            button.classList.add('active');
+          }
+
+          button.addEventListener('click', function () {
+            activeCategory = category.id;
+            updateUrl(activeLang, activeCategory);
+            renderFilters(activeLang, text);
+            renderGallery(activeLang, text);
+            updateHero(activeLang, text);
+          });
+
+          filters.appendChild(button);
+        });
+      }
+
+      function openLightbox(src, title, text) {
+        lightboxImg.src = src;
+        lightboxImg.alt = title || text.selectedPhotoAlt;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeBox() {
+        lightbox.classList.remove('open');
+        lightboxImg.src = '';
+        document.body.style.overflow = '';
+      }
+
+      function renderGallery(lang, text) {
+        galleryGrid.innerHTML = '';
+
+        const visiblePhotos = data.photos.filter(function (photo) {
+          return activeCategory === 'all' || photo.categories.includes(activeCategory);
+        });
+
+        visiblePhotos.forEach(function (photo) {
+          const card = document.createElement('article');
+          card.className = 'card';
+          const img = document.createElement('img');
+          img.src = photo.src;
+          img.alt = photo.title || text.portfolioPhotoAlt;
+          img.loading = 'lazy';
+
+          card.appendChild(img);
+
+          card.addEventListener('click', function () {
+            openLightbox(photo.src, photo.title, text);
+          });
+
+          galleryGrid.appendChild(card);
+        });
+      }
+
+      function renderArchives(lang, text) {
+        archiveList.innerHTML = '';
+
+        data.archives.forEach(function (archive) {
+          const item = document.createElement('article');
+          item.className = 'archive-item';
+
+          const label = document.createElement('div');
+          const strong = document.createElement('strong');
+          strong.textContent = localize(archive.title, lang);
+          const br = document.createElement('br');
+          const small = document.createElement('small');
+          small.textContent = localize(archive.meta, lang);
+          label.appendChild(strong);
+          label.appendChild(br);
+          label.appendChild(small);
+
+          const link = document.createElement('a');
+          link.className = 'link-btn';
+          link.href = archive.link;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.textContent = text.openFolder;
+
+          item.appendChild(label);
+          item.appendChild(link);
+          archiveList.appendChild(item);
+        });
+      }
+
+      function applyLanguage(lang, shouldPersist) {
+        activeLang = normalizeLang(lang);
+        const text = data.i18n[activeLang].gallery;
+        const navText = data.i18n[activeLang].nav;
+        const globalText = data.i18n[activeLang];
+
+        document.documentElement.lang = activeLang;
+        document.title = globalText.title.gallery;
+
+        navPortfolio.textContent = navText.categorySlider;
+        navPortfolio.href = 'portfolio.html?lang=' + encodeURIComponent(activeLang);
+        navContact.textContent = navText.contact;
+
+        filterSection.setAttribute('aria-label', text.filterSectionAria);
+        archivesSection.setAttribute('aria-label', text.archivesSectionAria);
+
+        archivesTitle.textContent = text.archivesTitle;
+        archivesSubtitle.textContent = text.archivesSubtitle;
+        footerIntro.textContent = text.footerIntro;
+        footerContactLink.textContent = text.contactInstagram;
+
+        lightbox.setAttribute('aria-label', text.lightboxAria);
+        closeLightbox.setAttribute('aria-label', text.closePreviewAria);
+        if (!lightboxImg.src) {
+          lightboxImg.alt = text.selectedPhotoAlt;
+        }
+
+        langSwitch.setAttribute('aria-label', data.i18n[activeLang].language.label);
+
+        updateLangButtons(activeLang);
+        renderFilters(activeLang, text);
+        renderGallery(activeLang, text);
+        renderArchives(activeLang, text);
+        updateHero(activeLang, text);
+        updateUrl(activeLang, activeCategory);
+
+        if (shouldPersist) {
+          localStorage.setItem('portfolio_lang', activeLang);
+        }
+      }
+
+      const validCategory = data.categories.some(function (c) {
+        return c.id === selectedFromUrl;
+      });
+      activeCategory = validCategory ? selectedFromUrl : 'all';
+
+      navContact.addEventListener('click', function (event) {
+        event.preventDefault();
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      closeLightbox.addEventListener('click', closeBox);
+      lightbox.addEventListener('click', function (event) {
+        if (event.target === lightbox) closeBox();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeBox();
+      });
+
+      langButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          applyLanguage(button.dataset.lang, true);
+        });
+      });
+
+      applyLanguage(getInitialLanguage(), true);
+    })();
+  </script>
+</body>
+</html>
