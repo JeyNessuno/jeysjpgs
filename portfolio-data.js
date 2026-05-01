@@ -121,7 +121,7 @@ window.PORTFOLIO_DATA = {
     {
       id: 'product',
       name: { en: 'Product', it: 'Prodotto' },
-      strapline: { en: 'Commercial product photography.', it: 'Fotografia commerciale di prodotto.' },
+      strapline: { en: 'Commercial product photography.', it: 'Fotografia commerciale di prodotti.' },
       cover: 'https://nx50077.your-storageshare.de/s/w9Q2m2kLw8wi9jb/preview'
     },
     {
@@ -147,7 +147,7 @@ window.PORTFOLIO_DATA = {
     }
   ],
   photos: [
-    { src: 'https://nx50077.your-storageshare.de/s/NdQnbMcF8C5jeM6/preview', title: 'Waterfall in Ecuador', categories: ['nature', 'travel', 'portrait'] },
+    { src: 'https://nx50077.your-storageshare.de/s/NdQnbMcF8C5jeM6/preview', title: 'Waterfall in Ecuador', categories: ['nature', 'travel'] },
     { src: 'https://nx50077.your-storageshare.de/s/ZNW2SCGErSpeEqD/preview', title: 'Monkey in Peru', categories: ['animals', 'nature', 'travel'] },
     { src: 'https://nx50077.your-storageshare.de/s/o3NNQQESidi8so6/preview', title: 'First Communion', categories: ['events', 'portrait'] },
     { src: 'https://nx50077.your-storageshare.de/s/Ge4rBtFFJbGfjSX/preview', title: 'Event Portrait', categories: ['events', 'portrait'] },
@@ -159,7 +159,7 @@ window.PORTFOLIO_DATA = {
     { src: 'https://nx50077.your-storageshare.de/s/5GgNo6XJF2wRcsZ/preview', title: 'Travel Story', categories: ['travel'] },
     { src: 'https://nx50077.your-storageshare.de/s/fK7ZkoDY32Zmzzb/preview', title: 'Traveler Portrait', categories: ['portrait', 'travel'] },
     { src: 'https://nx50077.your-storageshare.de/s/nWZni78esW5gZ9e/preview', title: 'Nature Passage', categories: ['nature', 'travel'] },
-    { src: 'https://nx50077.your-storageshare.de/s/ZStsQ34NAT6Cm9b/preview', title: 'Portrait Capture', categories: ['events', 'portrait'] },
+    { src: 'https://nx50077.your-storageshare.de/s/ZStsQ34NAT6Cm9b/preview', title: 'Portrait Capture', categories: ['portrait'] },
     { src: 'https://nx50077.your-storageshare.de/s/w9Q2m2kLw8wi9jb/preview', title: 'Product Detail', categories: ['product'] },
     { src: 'https://nx50077.your-storageshare.de/s/sZSedc4oaKfBRN3/preview', title: 'Product Setup', categories: ['product'] },
     { src: 'https://nx50077.your-storageshare.de/s/qSm48XgCzsqErgJ/preview', title: 'Interior Space', categories: ['real-estate'] },
