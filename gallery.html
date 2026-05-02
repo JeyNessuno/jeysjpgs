@@ -89,6 +89,8 @@
 
       let activeCategory = 'all';
       let activeLang = defaultLang;
+      let visiblePhotos = [];
+      let currentLightboxIndex = -1;
 
       function detectBrowserLang() {
         const browserLang = (navigator.language || defaultLang).toLowerCase();
@@ -209,20 +211,38 @@
         document.body.style.overflow = 'hidden';
       }
 
+      function openLightboxByIndex(index, text) {
+        if (!visiblePhotos.length) return;
+        const normalizedIndex = (index + visiblePhotos.length) % visiblePhotos.length;
+        currentLightboxIndex = normalizedIndex;
+        const photo = visiblePhotos[normalizedIndex];
+        openLightbox(photo.src, photo.title, text);
+      }
+
+      function isLightboxOpen() {
+        return lightbox.classList.contains('open');
+      }
+
+      function stepLightbox(delta) {
+        if (!isLightboxOpen() || !visiblePhotos.length) return;
+        openLightboxByIndex(currentLightboxIndex + delta, data.i18n[activeLang].gallery);
+      }
+
       function closeBox() {
         lightbox.classList.remove('open');
         lightboxImg.src = '';
+        currentLightboxIndex = -1;
         document.body.style.overflow = '';
       }
 
       function renderGallery(lang, text) {
         galleryGrid.innerHTML = '';
 
-        const visiblePhotos = data.photos.filter(function (photo) {
+        visiblePhotos = data.photos.filter(function (photo) {
           return activeCategory === 'all' || photo.categories.includes(activeCategory);
         });
 
-        visiblePhotos.forEach(function (photo) {
+        visiblePhotos.forEach(function (photo, index) {
           const card = document.createElement('article');
           card.className = 'card';
           const img = document.createElement('img');
@@ -233,7 +253,7 @@
           card.appendChild(img);
 
           card.addEventListener('click', function () {
-            openLightbox(photo.src, photo.title, text);
+            openLightboxByIndex(index, text);
           });
 
           galleryGrid.appendChild(card);
@@ -323,10 +343,20 @@
 
       closeLightbox.addEventListener('click', closeBox);
       lightbox.addEventListener('click', function (event) {
-        if (event.target === lightbox) closeBox();
+        if (!isLightboxOpen()) return;
+        if (event.target === closeLightbox) return;
+        if (event.target !== lightbox && event.target !== lightboxImg) return;
+        if (event.clientX >= window.innerWidth / 2) {
+          stepLightbox(1);
+        } else {
+          stepLightbox(-1);
+        }
       });
       document.addEventListener('keydown', function (event) {
+        if (!isLightboxOpen()) return;
         if (event.key === 'Escape') closeBox();
+        if (event.key === 'ArrowRight') stepLightbox(1);
+        if (event.key === 'ArrowLeft') stepLightbox(-1);
       });
 
       langButtons.forEach(function (button) {
