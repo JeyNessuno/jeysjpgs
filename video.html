@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jey's Photography | Video Projects</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">Jey's Photography</div>
+      <div class="header-actions">
+        <nav class="nav-links">
+          <a id="navPortfolio" href="portfolio.html">Category Slider</a>
+          <a id="navGallery" href="gallery.html">Full Gallery</a>
+          <a id="navVideo" href="video.html">Video</a>
+          <a id="navContact" href="#contact">Contact</a>
+        </nav>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="it">IT</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="video-shell">
+    <section class="gallery-hero">
+      <p id="videoHeroKicker">Video Projects</p>
+      <h1 id="videoHeroTitle">Showcase</h1>
+      <p id="videoHeroDescription">These are some of my publicly available video projects.</p>
+    </section>
+
+    <section class="video-grid">
+      <article class="video-card">
+        <div class="video-frame-wrapper">
+          <iframe class="video-frame" src="https://www.youtube.com/embed/etaVNqtCGAg" title="Eva, Fiorella, la morte" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="video-copy">
+          <h3 id="video1Title">Eva, Fiorella, la morte</h3>
+          <p id="video1Desc">A Giovanni Zanasi short movie. Written by Enrico Sola</p>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <div class="video-frame-wrapper">
+          <iframe class="video-frame" src="https://www.youtube.com/embed/7_Sl-W89ds8" title="Settembre" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="video-copy">
+          <h3 id="video2Title">Settembre</h3>
+          <p id="video2Desc">A Giovanni Zanasi short movie. Written by Marco Rubini</p>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <div class="video-frame-wrapper">
+          <iframe class="video-frame" src="https://www.youtube.com/embed/rV2hOZUP8B0" title="Il gusto dei ricordi" frameborder="0" allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="video-copy">
+          <h3 id="video3Title">Il gusto dei ricordi</h3>
+          <p id="video3Desc">A Giovanni Zanasi short movie.</p>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <div class="video-frame-wrapper">
+          <video class="video-frame" controls>
+            <source src="https://air.helloimjey.com/s/KNb2fejK99awtMT/download" type="video/mp4">
+          </video>
+        </div>
+        <div class="video-copy">
+          <h3 id="video4Title">Noelle's Meditation</h3>
+          <p id="video4Desc">A meditation session by Noelle Zermane</p>
+        </div>
+      </article>
+
+      <article class="video-card">
+        <div class="video-frame-wrapper">
+          <video class="video-frame" controls>
+            <source src="https://air.helloimjey.com/s/ccK2JrMmgbExdcW/download" type="video/mp4">
+          </video>
+        </div>
+        <div class="video-copy">
+          <h3 id="video5Title">Theatre Play</h3>
+          <p id="video5Desc">Recording of a play</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer id="contact" class="footer">
+    <p id="footerVideoIntro">Ready for your next project? Reach out anytime.</p>
+    <a href="https://www.instagram.com/jeysjpgs" target="_blank" rel="noopener" id="footerVideoLink">Contact on Instagram</a>
+    <p>© 2026 Giovanni "Jey" Zanasi</p>
+  </footer>
+
+  <script src="portfolio-data.js"></script>
+  <script>
+    (function () {
+      const data = window.PORTFOLIO_DATA;
+      if (!data) return;
+
+      const navPortfolio = document.getElementById('navPortfolio');
+      const navGallery = document.getElementById('navGallery');
+      const navVideo = document.getElementById('navVideo');
+      const navContact = document.getElementById('navContact');
+      const videoHeroKicker = document.getElementById('videoHeroKicker');
+      const videoHeroTitle = document.getElementById('videoHeroTitle');
+      const videoHeroDescription = document.getElementById('videoHeroDescription');
+      const footerVideoIntro = document.getElementById('footerVideoIntro');
+      const footerVideoLink = document.getElementById('footerVideoLink');
+      const langButtons = Array.from(document.querySelectorAll('.lang-btn'));
+      const langSwitch = document.querySelector('.lang-switch');
+
+      const supported = data.supportedLanguages || ['en', 'it'];
+      const defaultLang = data.defaultLanguage || 'en';
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryLang = urlParams.get('lang');
+      const savedLang = localStorage.getItem('portfolio_lang');
+
+      function detectBrowserLang() {
+        const browserLang = (navigator.language || defaultLang).toLowerCase();
+        return browserLang.startsWith('it') ? 'it' : 'en';
+      }
+
+      function normalizeLang(lang) {
+        return supported.includes(lang) ? lang : defaultLang;
+      }
+
+      function getInitialLanguage() {
+        if (queryLang) {
+          return normalizeLang(queryLang);
+        }
+        if (savedLang) {
+          return normalizeLang(savedLang);
+        }
+        return normalizeLang(detectBrowserLang());
+      }
+
+      function localize(value, lang) {
+        if (typeof value === 'string') return value;
+        if (value && typeof value === 'object') {
+          return value[lang] || value[defaultLang] || Object.values(value)[0] || '';
+        }
+        return '';
+      }
+
+      function updateLangButtons(lang) {
+        langButtons.forEach(function (button) {
+          const active = button.dataset.lang === lang;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+
+      function updateVideoContent(lang, text) {
+        videoHeroKicker.textContent = text.videoHeroKicker;
+        videoHeroTitle.textContent = text.videoHeroTitle;
+        videoHeroDescription.textContent = text.videoHeroDescription;
+
+        document.getElementById('video1Title').textContent = localize(text.video1Title, lang) || 'Eva, Fiorella, la morte';
+        document.getElementById('video1Desc').textContent = localize(text.video1Desc, lang) || 'A Giovanni Zanasi short movie. Written by Enrico Sola';
+        document.getElementById('video2Title').textContent = localize(text.video2Title, lang) || 'Settembre';
+        document.getElementById('video2Desc').textContent = localize(text.video2Desc, lang) || 'A Giovanni Zanasi short movie. Written by Marco Rubini';
+        document.getElementById('video3Title').textContent = localize(text.video3Title, lang) || 'Il gusto dei ricordi';
+        document.getElementById('video3Desc').textContent = localize(text.video3Desc, lang) || 'A Giovanni Zanasi short movie.';
+        document.getElementById('video4Title').textContent = localize(text.video4Title, lang) || 'Noelle\'s Meditation';
+        document.getElementById('video4Desc').textContent = localize(text.video4Desc, lang) || 'A meditation session by Noelle Zermane';
+        document.getElementById('video5Title').textContent = localize(text.video5Title, lang) || 'Theatre Play';
+        document.getElementById('video5Desc').textContent = localize(text.video5Desc, lang) || 'Recording of a play';
+
+        footerVideoIntro.textContent = text.videoFooterIntro;
+        footerVideoLink.textContent = text.videoContactInstagram;
+      }
+
+      function applyLanguage(lang, shouldPersist) {
+        const selectedLang = normalizeLang(lang);
+        const navText = data.i18n[selectedLang].nav;
+        const videoText = data.i18n[selectedLang].video;
+        const globalText = data.i18n[selectedLang];
+
+        document.documentElement.lang = selectedLang;
+        document.title = globalText.title.video || 'Video Projects';
+
+        navPortfolio.textContent = navText.categorySlider;
+        navPortfolio.href = 'portfolio.html?lang=' + encodeURIComponent(selectedLang);
+        navGallery.textContent = navText.fullGallery;
+        navGallery.href = 'gallery.html?lang=' + encodeURIComponent(selectedLang);
+        navVideo.textContent = navText.video;
+        navVideo.href = 'video.html?lang=' + encodeURIComponent(selectedLang);
+        navContact.textContent = navText.contact;
+        navContact.href = '#contact';
+
+        updateVideoContent(selectedLang, videoText);
+        updateLangButtons(selectedLang);
+
+        if (shouldPersist) {
+          localStorage.setItem('portfolio_lang', selectedLang);
+        }
+      }
+
+      langButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          const lang = button.dataset.lang;
+          applyLanguage(lang, true);
+        });
+      });
+
+      applyLanguage(getInitialLanguage(), true);
+    })();
+  </script>
+</body>
+</html>

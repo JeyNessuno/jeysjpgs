@@ -5,11 +5,13 @@ window.PORTFOLIO_DATA = {
     en: {
       title: {
         portfolio: "Jey's Photography | Category Showcase",
-        gallery: "Jey's Photography | Full Gallery"
+        gallery: "Jey's Photography | Full Gallery",
+        video: "Jey's Photography | Video Projects"
       },
       nav: {
         fullGallery: 'Full Gallery',
         categorySlider: 'Category Slider',
+        video: 'Video',
         contact: 'Contact'
       },
       language: {
@@ -22,7 +24,7 @@ window.PORTFOLIO_DATA = {
         openCollection: 'Open {category} Collection',
         seeEverything: 'See Everything',
         archivesTitle: 'Archives',
-        archivesSubtitle: 'High-resolution delivery folders.',
+        archivesSubtitle: 'This is how final delivery folders will look like:',
         openFolder: 'Open Folder',
         footerIntro: 'Start your project whenever you are ready.',
         contactInstagram: 'Contact on Instagram',
@@ -38,7 +40,7 @@ window.PORTFOLIO_DATA = {
         heroCopyCategoryFallback: 'Explore this category and jump to others with the filter buttons.',
         allFilter: 'All',
         archivesTitle: 'Archives',
-        archivesSubtitle: 'High-resolution delivery folders.',
+        archivesSubtitle: 'This is how final delivery folders will look like:',
         openFolder: 'Open Folder',
         footerIntro: 'Start your project whenever you are ready.',
         contactInstagram: 'Contact on Instagram',
@@ -47,17 +49,40 @@ window.PORTFOLIO_DATA = {
         portfolioPhotoAlt: 'Portfolio photo',
         selectedPhotoAlt: 'Selected portfolio image',
         filterSectionAria: 'Category filters',
-        archivesSectionAria: 'Client archives'
+        archivesSectionAria: 'Client archives',
+        aboutTitle: 'About',
+        aboutLine1: 'I don\'t stick to one style.',
+        aboutLine2: 'I like experimenting with different ways of seeing—whether it\'s events, portraits, or something more spontaneous. Each project ends up shaping its own look.',
+        aboutLine3: 'This site is a collection of that process.<br>Available for projects.',
+      },
+      video: {
+        videoHeroKicker: 'Video Projects',
+        videoHeroTitle: 'Showcase',
+        videoHeroDescription: 'These are some of my publicly available video projects.',
+        video1Title: 'Eva, Fiorella, la morte',
+        video1Desc: 'A Giovanni Zanasi short movie. Written by Enrico Sola',
+        video2Title: 'Settembre',
+        video2Desc: 'A Giovanni Zanasi short movie. Written by Marco Rubini',
+        video3Title: 'Il gusto dei ricordi',
+        video3Desc: 'A Giovanni Zanasi short movie.',
+        video4Title: 'Noelle\'s Meditation',
+        video4Desc: 'A meditation session by Noelle Zermane',
+        video5Title: 'Theatre Play',
+        video5Desc: 'Recording of a play',
+        videoFooterIntro: 'Ready for your next project? Reach out anytime.',
+        videoContactInstagram: 'Contact on Instagram'
       }
     },
     it: {
       title: {
         portfolio: 'Jey\'s Photography | Vetrina Categorie',
-        gallery: 'Jey\'s Photography | Galleria Completa'
+        gallery: 'Jey\'s Photography | Galleria Completa',
+        video: 'Jey\'s Photography | Progetti Video'
       },
       nav: {
         fullGallery: 'Galleria Completa',
         categorySlider: 'Slider Categorie',
+        video: 'Video',
         contact: 'Contatti'
       },
       language: {
@@ -95,7 +120,28 @@ window.PORTFOLIO_DATA = {
         portfolioPhotoAlt: 'Foto portfolio',
         selectedPhotoAlt: 'Immagine portfolio selezionata',
         filterSectionAria: 'Filtri categoria',
-        archivesSectionAria: 'Archivi clienti'
+        archivesSectionAria: 'Archivi clienti',
+        aboutTitle: 'Chi sono',
+        aboutLine1: 'Non mi attengo a uno stile unico.',
+        aboutLine2: 'Mi piace sperimentare diversi modi di vedere—che si tratti di eventi, ritratti, o qualcosa di più spontaneo. Ogni progetto finisce per dare forma al suo aspetto.',
+        aboutLine3: 'Questo sito è una raccolta di quel processo.<br>Disponibile per progetti.',
+      },
+      video: {
+        videoHeroKicker: 'Progetti Video',
+        videoHeroTitle: 'Vetrina',
+        videoHeroDescription: 'Questi sono alcuni dei miei progetti video disponibili pubblicamente.',
+        video1Title: 'Eva, Fiorella, la morte',
+        video1Desc: 'Un cortometraggio di Giovanni Zanasi. Scritto da Enrico Sola',
+        video2Title: 'Settembre',
+        video2Desc: 'Un cortometraggio di Giovanni Zanasi. Scritto da Marco Rubini',
+        video3Title: 'Il gusto dei ricordi',
+        video3Desc: 'Un cortometraggio di Giovanni Zanasi.',
+        video4Title: 'Meditazione di Noelle',
+        video4Desc: 'Una sessione di meditazione di Noelle Zermane',
+        video5Title: 'Rappresentazione teatrale',
+        video5Desc: 'Registrazione di uno spettacolo teatrale',
+        videoFooterIntro: 'Pronto per il tuo prossimo progetto? Contattami in qualsiasi momento.',
+        videoContactInstagram: 'Contattami su Instagram'
       }
     }
   },

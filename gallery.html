@@ -13,6 +13,7 @@
       <div class="header-actions">
         <nav class="nav-links">
           <a id="navPortfolio" href="portfolio.html">Category Slider</a>
+          <a id="navVideo" href="video.html">Video</a>
           <a id="navContact" href="#contact">Contact</a>
         </nav>
         <div class="lang-switch" role="group" aria-label="Language">
@@ -37,8 +38,22 @@
 
     <section id="archivesSection" class="archives" aria-label="Client archives">
       <h2 id="archivesTitle">Archives</h2>
-      <p id="archivesSubtitle">High-resolution delivery folders.</p>
+      <p id="archivesSubtitle">This is how final delivery folders will look like:</p>
       <div id="archiveList" class="archive-list"></div>
+    </section>
+
+    <section class="about-section">
+      <div class="about-container">
+        <div class="about-profile">
+          <img src="https://air.helloimjey.com/s/sSJace64L3pGfnD/preview" alt="Profile picture" class="profile-pic">
+        </div>
+        <div class="about-content">
+          <h2 id="aboutTitle">About</h2>
+          <p id="aboutLine1">I don't stick to one style.</p>
+          <p id="aboutLine2">I like experimenting with different ways of seeing—whether it's events, portraits, or something more spontaneous. Each project ends up shaping its own look.</p>
+          <p id="aboutLine3">This site is a collection of that process.<br>Available for projects.</p>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -67,9 +82,14 @@
       const heroCopy = document.getElementById('heroCopy');
       const archivesTitle = document.getElementById('archivesTitle');
       const archivesSubtitle = document.getElementById('archivesSubtitle');
+      const aboutTitle = document.getElementById('aboutTitle');
+      const aboutLine1 = document.getElementById('aboutLine1');
+      const aboutLine2 = document.getElementById('aboutLine2');
+      const aboutLine3 = document.getElementById('aboutLine3');
       const footerIntro = document.getElementById('footerIntro');
       const footerContactLink = document.getElementById('footerContactLink');
       const navPortfolio = document.getElementById('navPortfolio');
+      const navVideo = document.getElementById('navVideo');
       const navContact = document.getElementById('navContact');
       const filterSection = document.getElementById('filterSection');
       const archivesSection = document.getElementById('archivesSection');
@@ -301,6 +321,8 @@
 
         navPortfolio.textContent = navText.categorySlider;
         navPortfolio.href = 'portfolio.html?lang=' + encodeURIComponent(activeLang);
+        navVideo.textContent = navText.video;
+        navVideo.href = 'video.html?lang=' + encodeURIComponent(activeLang);
         navContact.textContent = navText.contact;
 
         filterSection.setAttribute('aria-label', text.filterSectionAria);
@@ -308,6 +330,10 @@
 
         archivesTitle.textContent = text.archivesTitle;
         archivesSubtitle.textContent = text.archivesSubtitle;
+        aboutTitle.textContent = text.aboutTitle;
+        aboutLine1.textContent = text.aboutLine1;
+        aboutLine2.textContent = text.aboutLine2;
+        aboutLine3.innerHTML = text.aboutLine3;
         footerIntro.textContent = text.footerIntro;
         footerContactLink.textContent = text.contactInstagram;
 
