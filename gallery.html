@@ -5,16 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jey's Photography | Full Gallery</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">Jey's Photography</div>
       <div class="header-actions">
-        <nav class="nav-links">
-          <a id="navPortfolio" href="portfolio.html">Category Slider</a>
+        <button id="navToggle" class="nav-toggle" aria-expanded="false" aria-label="Open menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav id="navMenu" class="nav-menu" aria-label="Site navigation">
+          <a id="navPortfolio" href="portfolio.html">Home</a>
+          <a id="navGallery" href="gallery.html">Full Gallery</a>
           <a id="navVideo" href="video.html">Video</a>
-          <a id="navContact" href="#contact">Contact</a>
+          <a id="navContact" href="contact.html">Contact</a>
         </nav>
         <div class="lang-switch" role="group" aria-label="Language">
           <button type="button" class="lang-btn" data-lang="it">IT</button>
@@ -42,21 +52,6 @@
       <div id="archiveList" class="archive-list"></div>
     </section>
 
-    <section class="about-section">
-      <div class="about-container">
-        <div class="about-profile">
-          <img src="https://air.helloimjey.com/s/sSJace64L3pGfnD/preview" alt="Profile picture" class="profile-pic">
-        </div>
-        <div class="about-content">
-          <h2 id="aboutTitle">About</h2>
-          <p id="aboutLine1">I don't stick to one style.</p>
-          <p id="aboutLine2">I like experimenting with different ways of seeing—whether it's events, portraits, or something more spontaneous. Each project ends up shaping its own look.</p>
-          <p id="aboutLine3">This site is a collection of that process.<br>Available for projects.</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
   <footer id="contact" class="footer">
     <p id="footerIntro">Start your project whenever you are ready.</p>
     <a id="footerContactLink" href="https://www.instagram.com/jeysjpgs" target="_blank" rel="noopener">Contact on Instagram</a>
@@ -82,23 +77,22 @@
       const heroCopy = document.getElementById('heroCopy');
       const archivesTitle = document.getElementById('archivesTitle');
       const archivesSubtitle = document.getElementById('archivesSubtitle');
-      const aboutTitle = document.getElementById('aboutTitle');
-      const aboutLine1 = document.getElementById('aboutLine1');
-      const aboutLine2 = document.getElementById('aboutLine2');
-      const aboutLine3 = document.getElementById('aboutLine3');
       const footerIntro = document.getElementById('footerIntro');
       const footerContactLink = document.getElementById('footerContactLink');
       const navPortfolio = document.getElementById('navPortfolio');
+      const navGallery = document.getElementById('navGallery');
       const navVideo = document.getElementById('navVideo');
       const navContact = document.getElementById('navContact');
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('navMenu');
       const filterSection = document.getElementById('filterSection');
       const archivesSection = document.getElementById('archivesSection');
       const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightboxImg');
       const closeLightbox = document.getElementById('closeLightbox');
       const langSwitch = document.querySelector('.lang-switch');
-      const contactSection = document.getElementById('contact');
       const langButtons = Array.from(document.querySelectorAll('.lang-btn'));
+      const header = document.querySelector('.site-header');
 
       const supported = data.supportedLanguages || ['en', 'it'];
       const defaultLang = data.defaultLanguage || 'en';
@@ -321,19 +315,21 @@
 
         navPortfolio.textContent = navText.categorySlider;
         navPortfolio.href = 'portfolio.html?lang=' + encodeURIComponent(activeLang);
+        navGallery.textContent = navText.fullGallery;
+        navGallery.href = 'gallery.html?lang=' + encodeURIComponent(activeLang);
         navVideo.textContent = navText.video;
         navVideo.href = 'video.html?lang=' + encodeURIComponent(activeLang);
         navContact.textContent = navText.contact;
+        navContact.href = 'contact.html?lang=' + encodeURIComponent(activeLang);
+
+        footerContactLink.textContent = navText.contact;
+        footerContactLink.href = 'contact.html?lang=' + encodeURIComponent(activeLang);
 
         filterSection.setAttribute('aria-label', text.filterSectionAria);
         archivesSection.setAttribute('aria-label', text.archivesSectionAria);
 
         archivesTitle.textContent = text.archivesTitle;
         archivesSubtitle.textContent = text.archivesSubtitle;
-        aboutTitle.textContent = text.aboutTitle;
-        aboutLine1.textContent = text.aboutLine1;
-        aboutLine2.textContent = text.aboutLine2;
-        aboutLine3.innerHTML = text.aboutLine3;
         footerIntro.textContent = text.footerIntro;
         footerContactLink.textContent = text.contactInstagram;
 
@@ -357,15 +353,72 @@
         }
       }
 
+      function initMobileHeaderBehavior(scrollContainer) {
+        if (!header) return;
+
+        let lastScrollTop = 0;
+        const threshold = 24;
+
+        function getScrollTop() {
+          if (scrollContainer && scrollContainer !== window) {
+            return scrollContainer.scrollTop || 0;
+          }
+          return window.pageYOffset || document.documentElement.scrollTop || 0;
+        }
+
+        function updateHeader(forceVisible) {
+          const isMobile = window.matchMedia('(max-width: 767px)').matches;
+          const menuOpen = !!(navMenu && navMenu.classList.contains('open'));
+          const currentScrollTop = Math.max(getScrollTop(), 0);
+
+          if (!isMobile) {
+            header.classList.remove('compressed', 'hidden');
+            lastScrollTop = currentScrollTop;
+            return;
+          }
+
+          header.classList.toggle('compressed', currentScrollTop > threshold || menuOpen);
+
+          if (forceVisible || menuOpen || currentScrollTop <= threshold) {
+            header.classList.remove('hidden');
+          } else if (currentScrollTop > lastScrollTop + 2) {
+            header.classList.add('hidden');
+          } else if (currentScrollTop < lastScrollTop - 2) {
+            header.classList.remove('hidden');
+          }
+
+          lastScrollTop = currentScrollTop;
+        }
+
+        const onScroll = function () {
+          updateHeader(false);
+        };
+
+        if (scrollContainer && scrollContainer !== window) {
+          scrollContainer.addEventListener('scroll', onScroll, { passive: true });
+        } else {
+          window.addEventListener('scroll', onScroll, { passive: true });
+        }
+
+        window.addEventListener('resize', function () {
+          updateHeader(true);
+        }, { passive: true });
+
+        document.addEventListener('touchstart', function () {
+          updateHeader(true);
+        }, { passive: true });
+
+        header.addEventListener('pointerdown', function () {
+          updateHeader(true);
+        });
+
+        updateHeader(true);
+      }
+
       const validCategory = data.categories.some(function (c) {
         return c.id === selectedFromUrl;
       });
       activeCategory = validCategory ? selectedFromUrl : 'all';
-
-      navContact.addEventListener('click', function (event) {
-        event.preventDefault();
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-      });
 
       closeLightbox.addEventListener('click', closeBox);
       lightbox.addEventListener('click', function (event) {
@@ -385,12 +438,36 @@
         if (event.key === 'ArrowLeft') stepLightbox(-1);
       });
 
+      if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function () {
+          const isOpen = navMenu.classList.toggle('open');
+          navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          if (header) {
+            header.classList.remove('hidden');
+            if (isOpen) {
+              header.classList.add('compressed');
+            }
+          }
+        });
+
+        Array.from(navMenu.querySelectorAll('a')).forEach(function (link) {
+          link.addEventListener('click', function () {
+            navMenu.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            if (header) {
+              header.classList.remove('hidden');
+            }
+          });
+        });
+      }
+
       langButtons.forEach(function (button) {
         button.addEventListener('click', function () {
           applyLanguage(button.dataset.lang, true);
         });
       });
 
+      initMobileHeaderBehavior(window);
       applyLanguage(getInitialLanguage(), true);
     })();
   </script>

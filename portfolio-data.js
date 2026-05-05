@@ -6,13 +6,21 @@ window.PORTFOLIO_DATA = {
       title: {
         portfolio: "Jey's Photography | Category Showcase",
         gallery: "Jey's Photography | Full Gallery",
-        video: "Jey's Photography | Video Projects"
+        video: "Jey's Photography | Video Projects",
+        contact: "Jey's Photography | Contact"
       },
       nav: {
         fullGallery: 'Full Gallery',
-        categorySlider: 'Category Slider',
+        categorySlider: 'Home',
         video: 'Video',
         contact: 'Contact'
+      },
+      contact: {
+        title: 'Contact',
+        intro: 'Let’s talk about your next project.',
+        emailLabel: 'Your email:',
+        messageLabel: 'Your message:',
+        sendButton: 'Send'
       },
       language: {
         label: 'Language'
@@ -52,7 +60,7 @@ window.PORTFOLIO_DATA = {
         archivesSectionAria: 'Client archives',
         aboutTitle: 'About',
         aboutLine1: 'I don\'t stick to one style.',
-        aboutLine2: 'I like experimenting with different ways of seeing—whether it\'s events, portraits, or something more spontaneous. Each project ends up shaping its own look.',
+        aboutLine2: 'I like experimenting with different ways of seeing, whether it\'s events, portraits, or something more spontaneous. Each project ends up shaping its own look.',
         aboutLine3: 'This site is a collection of that process.<br>Available for projects.',
       },
       video: {
@@ -77,13 +85,21 @@ window.PORTFOLIO_DATA = {
       title: {
         portfolio: 'Jey\'s Photography | Vetrina Categorie',
         gallery: 'Jey\'s Photography | Galleria Completa',
-        video: 'Jey\'s Photography | Progetti Video'
+        video: 'Jey\'s Photography | Progetti Video',
+        contact: 'Jey\'s Photography | Contatti'
       },
       nav: {
         fullGallery: 'Galleria Completa',
-        categorySlider: 'Slider Categorie',
+        categorySlider: 'Home',
         video: 'Video',
         contact: 'Contatti'
+      },
+      contact: {
+        title: 'Contatti',
+        intro: 'Parliamo del tuo prossimo progetto.',
+        emailLabel: 'La tua email:',
+        messageLabel: 'Il tuo messaggio:',
+        sendButton: 'Invia'
       },
       language: {
         label: 'Lingua'
@@ -123,7 +139,7 @@ window.PORTFOLIO_DATA = {
         archivesSectionAria: 'Archivi clienti',
         aboutTitle: 'Chi sono',
         aboutLine1: 'Non mi attengo a uno stile unico.',
-        aboutLine2: 'Mi piace sperimentare diversi modi di vedere—che si tratti di eventi, ritratti, o qualcosa di più spontaneo. Ogni progetto finisce per dare forma al suo aspetto.',
+        aboutLine2: 'Mi piace sperimentare diversi modi di vedere, che si tratti di eventi, ritratti, o qualcosa di più spontaneo. Ogni progetto finisce per dare forma al suo aspetto.',
         aboutLine3: 'Questo sito è una raccolta di quel processo.<br>Disponibile per progetti.',
       },
       video: {
