@@ -34,7 +34,8 @@
     </div>
   </header>
 
-  <main class="contact-shell">    <section class="about-section">
+  <main class="contact-shell">
+    <section class="about-section">
       <div class="about-container">
         <div class="about-profile">
           <img src="https://air.helloimjey.com/s/sSJace64L3pGfnD/preview" alt="Profile picture" class="profile-pic">
@@ -61,6 +62,17 @@
         </label>
         <button type="submit" id="sendButton">Send</button>
       </form>
+      <p id="instagramPrompt" class="instagram-mock-label">or contact me on instagram:</p>
+      <a class="instagram-mock-link" href="https://instagram.com/jeysjpgs" target="_blank" rel="noopener" aria-label="Open @jeysjpgs on Instagram">
+        <div class="instagram-mock" aria-label="Instagram profile preview">
+          <img src="https://air.helloimjey.com/s/sSJace64L3pGfnD/preview" alt="Jey Instagram profile image" class="instagram-mock-avatar">
+          <div class="instagram-mock-copy">
+            <strong class="instagram-mock-handle">@jeysjpgs</strong>
+            <span class="instagram-mock-name">Jey</span>
+            <p class="instagram-mock-bio">Photography portfolio | @helloimjey</p>
+          </div>
+        </div>
+      </a>
     </section>
   </main>
 
@@ -83,7 +95,10 @@
       const contactTitle = document.getElementById('contactTitle');
       const contactIntro = document.getElementById('contactIntro');
       const emailLabel = document.getElementById('emailLabel');
+      const emailInput = document.getElementById('email');
       const messageLabel = document.getElementById('messageLabel');
+      const messageInput = document.getElementById('message');
+      const instagramPrompt = document.getElementById('instagramPrompt');
       const sendButton = document.getElementById('sendButton');
       const aboutTitle = document.getElementById('aboutTitle');
       const aboutLine1 = document.getElementById('aboutLine1');
@@ -153,7 +168,10 @@
         contactTitle.textContent = contactText.title;
         contactIntro.textContent = contactText.intro;
         emailLabel.textContent = contactText.emailLabel;
+        emailInput.placeholder = contactText.emailPlaceholder || 'you@example.com';
         messageLabel.textContent = contactText.messageLabel;
+        messageInput.placeholder = contactText.messagePlaceholder || 'Tell me about your project';
+        instagramPrompt.textContent = contactText.instagramPrompt || 'or contact me on instagram:';
         sendButton.textContent = contactText.sendButton;
 
         langSwitch.setAttribute('aria-label', data.i18n[selectedLang].language.label);

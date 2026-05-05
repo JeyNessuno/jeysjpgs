@@ -19,7 +19,10 @@ window.PORTFOLIO_DATA = {
         title: 'Contact',
         intro: 'Let’s talk about your next project.',
         emailLabel: 'Your email:',
+        emailPlaceholder: 'you@example.com',
         messageLabel: 'Your message:',
+        messagePlaceholder: 'Tell me about your project',
+        instagramPrompt: 'or contact me on instagram:',
         sendButton: 'Send'
       },
       language: {
@@ -98,7 +101,10 @@ window.PORTFOLIO_DATA = {
         title: 'Contatti',
         intro: 'Parliamo del tuo prossimo progetto.',
         emailLabel: 'La tua email:',
+        emailPlaceholder: 'tu@esempio.com',
         messageLabel: 'Il tuo messaggio:',
+        messagePlaceholder: 'Parlami del tuo progetto',
+        instagramPrompt: 'oppure contattami su instagram:',
         sendButton: 'Invia'
       },
       language: {
